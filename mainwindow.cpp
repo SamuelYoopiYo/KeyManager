@@ -43,9 +43,8 @@ MainWindow::~MainWindow()
 
 bool MainWindow::readJSON()
 {
-    QFile jsonFile("/home/ezhik/pars/json/cridentials_encrypted.txt");
+    QFile jsonFile("/home/ezhik/pars/json/cridentials_encrypted.json");
     if(!jsonFile.open(QIODevice::ReadOnly)) return false;
-
 
     QByteArray hexEncryptedBytes = jsonFile.readAll();
     qDebug() << "***hexEncryptedBytes" << hexEncryptedBytes;
@@ -55,8 +54,11 @@ bool MainWindow::readJSON()
     qDebug() << "***decryptedBytes" << decryptedBytes;
     int ret_code = decryptFile(encryptedBytes, decryptedBytes);
 
+    qDebug() << "***decryptedBytes " << decryptedBytes;
 
-//    QJsonDocument jsonDoc = QJsonDocument::fromJson(decryptedBytes);
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(decryptedBytes);
+    qDebug() << "***jsonDoc " << jsonDoc;
 
 //    QJsonObject jsonObj = jsonDoc.object();
 
@@ -90,11 +92,6 @@ void MainWindow::filterListWidget(const QString &searchStrings)
 
 int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryptedBytes)
 {
-    unsigned char outbuf[1024];
-    /*
-     * Bogus key and IV: we'd normally set these from
-     * another source.
-     */
 
     QByteArray key_hex("4817ddb54d7a527a5cb1e069434fdfb5350bfdc910cc6a3aa35b54a4036b9809");
     QByteArray key_ba = QByteArray::fromHex(key_hex);
@@ -128,20 +125,22 @@ int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryp
     QDataStream decrypted_stream(&decryptedBytes, QIODevice::ReadWrite);
 
 
-    encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
-    while(encr_len > 0)
+//    encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
+    do
     {
         encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
-        if (!EVP_EncryptUpdate(ctx, decrypted_buf, &decr_len, encrypted_buf, encr_len)) {
+        qDebug() << "***encr_len " << encr_len;
+        if (!EVP_DecryptUpdate(ctx, decrypted_buf, &decr_len, encrypted_buf, encr_len)) {
             /* Error */
+            qDebug() << "Error";
             EVP_CIPHER_CTX_free(ctx);
             return 0;
         }
 
+        decryptedBytes.append(reinterpret_cast<char*>(decrypted_buf), decr_len);
+//        encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
         qDebug() << "***EVP_EncryptUpdate " << reinterpret_cast<char*>(decrypted_buf);
-        decrypted_stream << QByteArray(reinterpret_cast<char*>(decrypted_buf), decr_len);
-        encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
-    }
+    }while(encr_len > 0);
 
     int tmplen;
     if (!EVP_DecryptFinal_ex(ctx, decrypted_buf + decr_len, &tmplen)) {

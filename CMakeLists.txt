@@ -20,7 +20,7 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
         json/cridentials.json
-        json/cridentials_encrypted.txt
+        json/cridentials_encrypted.json
         listitem.ui
         listitem.cpp
         listitem.h
