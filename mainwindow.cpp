@@ -12,6 +12,8 @@
 #include <QJsonValue>
 #include <QPixmap>
 #include <QLineEdit>
+#include <QBuffer>
+#include <QCryptographicHash>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -60,9 +62,11 @@ bool MainWindow::readJSON()
     QJsonDocument jsonDoc = QJsonDocument::fromJson(decryptedBytes);
     qDebug() << "***jsonDoc " << jsonDoc;
 
-//    QJsonObject jsonObj = jsonDoc.object();
+    QJsonObject jsonObj = jsonDoc.object();
+    qDebug() << "***jsonObj " << jsonObj;
 
-//    jsonArr = jsonObj["cridentials"].toArray();
+    jsonArr = jsonObj["cridentials"].toArray();
+    qDebug() << "***jsonArr " << jsonArr;
 
     jsonFile.close();
     return true;
@@ -93,19 +97,19 @@ void MainWindow::filterListWidget(const QString &searchStrings)
 int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryptedBytes)
 {
 
-    QByteArray key_hex("4817ddb54d7a527a5cb1e069434fdfb5350bfdc910cc6a3aa35b54a4036b9809");
+    QByteArray key_hex("060e33205a731400c2eb92bc12cf921a4e44cf1851d216f144337dd6ec5350a7");
     QByteArray key_ba = QByteArray::fromHex(key_hex);
     qDebug() << "***key_ba " << key_ba;
     unsigned char key[32] = {0};
     memcpy(key, key_ba.data(), 32);
     qDebug() << "key " << key;
 
-    QByteArray iv_hex("000102030405060708090a0b0c0d0e0f");
+    QByteArray iv_hex("00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f");
     QByteArray iv_ba = QByteArray::fromHex(iv_hex);
     qDebug() << "***iv_ba " << iv_ba;
     unsigned char iv[16] = {0};
-    memcpy(key, key_ba.data(), 16);
-    qDebug() << "iv " << key;
+    memcpy(iv, iv_ba.data(), 16);
+    qDebug() << "iv " << iv;
 
     EVP_CIPHER_CTX *ctx;
     ctx = EVP_CIPHER_CTX_new();
@@ -122,13 +126,16 @@ int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryp
     int encr_len, decr_len;
 
     QDataStream encrypted_stream(encryptedBytes);
-    QDataStream decrypted_stream(&decryptedBytes, QIODevice::ReadWrite);
+
+    decryptedBytes.clear();
+    QBuffer decryptedBuffer(&decryptedBytes);
+    decryptedBuffer.open(QIODevice::ReadWrite);
+//    QDataStream decrypted_stream(&buffer);
 
 
-//    encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
-    do
-    {
-        encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
+    encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
+    while(encr_len > 0){
+//        encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
         qDebug() << "***encr_len " << encr_len;
         if (!EVP_DecryptUpdate(ctx, decrypted_buf, &decr_len, encrypted_buf, encr_len)) {
             /* Error */
@@ -137,24 +144,39 @@ int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryp
             return 0;
         }
 
-        decryptedBytes.append(reinterpret_cast<char*>(decrypted_buf), decr_len);
-//        encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
+        decryptedBuffer.write(reinterpret_cast<char*>(decrypted_buf), decr_len);
+        encr_len = encrypted_stream.readRawData(reinterpret_cast<char*>(encrypted_buf), BUF_LEN);
         qDebug() << "***EVP_EncryptUpdate " << reinterpret_cast<char*>(decrypted_buf);
-    }while(encr_len > 0);
+    }
 
     int tmplen;
-    if (!EVP_DecryptFinal_ex(ctx, decrypted_buf + decr_len, &tmplen)) {
+    if (!EVP_DecryptFinal_ex(ctx, decrypted_buf, &tmplen)) {
           /* Error */
           EVP_CIPHER_CTX_free(ctx);
-          return 0;
+          return -1;
       }
+      qDebug() << "***EVP_DecryptFinal_ex " << reinterpret_cast<char*>(decrypted_buf);
+      decryptedBuffer.write(reinterpret_cast<char*>(decrypted_buf), tmplen);
       EVP_CIPHER_CTX_free(ctx);
 
+    decryptedBuffer.close();
     return 0;
 }
 
-//IV: 000102030405060708090a0b0c0d0e0f
+//IV: AAB1C2D3A4B5C6B7A8A9BA0B0C0D0E0F
 
-//password = 4505
+//password = 6060
 
-//key = sha256(password) = 4817ddb54d7a527a5cb1e069434fdfb5350bfdc910cc6a3aa35b54a4036b9809
+//key = sha256(password) = 060e33205a731400c2eb92bc12cf921a4e44cf1851d216f144337dd6ec5350a7
+
+//void MainWindow::on_lineEdit_2_returnPressed()
+//{
+//    ui->stackedWidget->setCurrentIndex(1);
+//}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+

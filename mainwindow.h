@@ -25,5 +25,7 @@ private:
 
 private slots:
     void filterListWidget(const QString &searchStrings);
+    void on_lineEdit_2_returnPressed();
+    void on_pushButton_clicked();
 };
 #endif // MAINWINDOW_H
