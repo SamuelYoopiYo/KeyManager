@@ -15,9 +15,9 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    bool readJSON();
+    bool readJSON(unsigned char *key);
     QJsonArray jsonArr;
-    int decryptFile(const QByteArray& encryptedBytes, QByteArray& decryptedBytes);
+    int decryptFile(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
     ~MainWindow();
 
 private:
@@ -26,6 +26,5 @@ private:
 private slots:
     void filterListWidget(const QString &searchStrings);
     void on_lineEdit_2_returnPressed();
-    void on_pushButton_clicked();
 };
 #endif // MAINWINDOW_H

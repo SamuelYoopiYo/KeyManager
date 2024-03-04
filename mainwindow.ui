@@ -113,11 +113,7 @@ color: rgb(192, 191, 188);</string>
          </spacer>
         </item>
         <item row="2" column="1">
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>PushButton</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lineEdit_2"/>
         </item>
        </layout>
       </widget>
