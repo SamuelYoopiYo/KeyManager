@@ -17,6 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     bool readJSON(unsigned char *key);
     QJsonArray jsonArr;
+    void filterListWidget(const QString &searchStrings);
     int decryptFile(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
     ~MainWindow();
 
@@ -24,7 +25,7 @@ private:
     Ui::MainWindow *ui;
 
 private slots:
-    void filterListWidget(const QString &searchStrings);
+
     void on_lineEdit_2_returnPressed();
 };
 #endif // MAINWINDOW_H

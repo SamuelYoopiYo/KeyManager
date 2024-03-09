@@ -21,6 +21,7 @@ set(PROJECT_SOURCES
         mainwindow.ui
         json/cridentials.json
         json/cridentials_encrypted.json
+        json/cridentials_to_encrypt.json
         listitem.ui
         listitem.cpp
         listitem.h

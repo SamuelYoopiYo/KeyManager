@@ -71,7 +71,7 @@ void MainWindow::filterListWidget(const QString &searchStrings)
         if ((searchStrings == "") || jsonItem["site"].toString().toLower().contains(searchStrings.toLower()))
         {
             QListWidgetItem *newItem = new QListWidgetItem();
-            ListItem *itemWidget = new ListItem(jsonItem["site"].toString());
+            ListItem *itemWidget = new ListItem(jsonItem["site"].toString(), jsonItem["login"].toString(), jsonItem["password"].toString());
 
             ui->listWidget->addItem(newItem);
             ui->listWidget->setItemWidget(newItem, itemWidget);

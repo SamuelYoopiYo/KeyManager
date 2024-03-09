@@ -12,11 +12,18 @@ class ListItem : public QWidget
     Q_OBJECT
 
 public:
-    explicit ListItem(QString site, QWidget *parent = nullptr);
+    explicit ListItem(QString site, QString login_encrypted, QString password_encrypted, QWidget *parent = nullptr);
     ~ListItem();
+
+private slots:
+    void on_lineEdit_2_selectionChanged();
+
+    void on_lineEdit_2_editingFinished();
 
 private:
     Ui::ListItem *ui;
+    QString pass_encr;
+    QString log_encr;
 };
 
 #endif // LISTITEM_H
