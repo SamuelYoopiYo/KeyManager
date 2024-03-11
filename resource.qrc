@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/img">
         <file>img/keys.png</file>
+        <file>img/cross.png</file>
+        <file>img/eye.png</file>
     </qresource>
 </RCC>

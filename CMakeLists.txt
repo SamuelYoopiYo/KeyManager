@@ -26,6 +26,9 @@ set(PROJECT_SOURCES
         listitem.cpp
         listitem.h
         resource.qrc
+        modalwindow.cpp
+        modalwindow.h
+        modalwindow.ui
 
 )
 

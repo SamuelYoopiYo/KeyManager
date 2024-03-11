@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include <modalwindow.h>
+
 namespace Ui {
 class ListItem;
 }
@@ -13,17 +15,19 @@ class ListItem : public QWidget
 
 public:
     explicit ListItem(QString site, QString login_encrypted, QString password_encrypted, QWidget *parent = nullptr);
+    int decryptString(const QByteArray& encryptedBytes, QByteArray& decryptedBytes);
     ~ListItem();
 
 private slots:
-    void on_lineEdit_2_selectionChanged();
+    void on_pushButton_clicked(bool checked);
+    void getData(QString pin);
 
-    void on_lineEdit_2_editingFinished();
 
 private:
     Ui::ListItem *ui;
-    QString pass_encr;
-    QString log_encr;
+    char* pass_encr;
+    char* log_encr;
+    ModalWindow EnterPassword;
 };
 
 #endif // LISTITEM_H
