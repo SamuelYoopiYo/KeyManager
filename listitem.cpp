@@ -46,11 +46,18 @@ void ListItem::on_pushButton_clicked(bool checked)
 {
     if (checked)
     {
-        EnterPassword.setModal(true);
-        EnterPassword.exec();
+//        EnterPassword = new ModalWindow();
+//        EnterPassword->setModal(true);
+//        QObject::connect(EnterPassword, &ModalWindow::sendData, this, &ListItem::getData);
+//        if (EnterPassword->exec() == ModalWindow::Rejected)
+//        {
 
-        connect(&EnterPassword, SIGNAL(sendData(QString)), SLOT(getData(QString)));
+//        }
 
+//        connect(&EnterPassword, SIGNAL(sendData(QString)), SLOT(getData(QString)));
+//        QObject::connect(&EnterPassword, &ModalWin dow::sendData, this, &ListItem::getData);
+        QString pin = ModalWindow::getPin();
+        qDebug() << "***pin " << pin;
 
         QByteArray hexEncryptedPass(pass_encr);
         QByteArray encryptedPass = QByteArray::fromHex(hexEncryptedPass);

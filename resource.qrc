@@ -3,5 +3,6 @@
         <file>img/keys.png</file>
         <file>img/cross.png</file>
         <file>img/eye.png</file>
+        <file>img/plus.png</file>
     </qresource>
 </RCC>

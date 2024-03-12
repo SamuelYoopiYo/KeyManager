@@ -13,6 +13,7 @@ class ModalWindow : public QDialog
 
 public:
     explicit ModalWindow(QWidget *parent = nullptr);
+    static QString getPin(QWidget *parent = nullptr);
     ~ModalWindow();
 
 private slots:

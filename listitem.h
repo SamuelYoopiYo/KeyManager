@@ -27,7 +27,7 @@ private:
     Ui::ListItem *ui;
     char* pass_encr;
     char* log_encr;
-    ModalWindow EnterPassword;
+    ModalWindow *EnterPassword;
 };
 
 #endif // LISTITEM_H
