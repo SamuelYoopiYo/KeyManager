@@ -49,14 +49,20 @@ bool MainWindow::readJSON(unsigned char *key)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(decryptedBytes);
 //    qDebug() << "***jsonDoc " << jsonDoc;
 
+    if (!jsonDoc.isObject())
+    {
+        return 1;
+    }
+
     QJsonObject jsonObj = jsonDoc.object();
-//    qDebug() << "***jsonObj " << jsonObj;
+//    qDebug() << "***jsonObj " << jsonOb
 
     jsonArr = jsonObj["cridentials"].toArray();
 //    qDebug() << "***jsonArr " << jsonArr;
 
+
     jsonFile.close();
-    return true;
+    return ret_code;
 }
 
 void MainWindow::filterListWidget(const QString &searchStrings)
@@ -104,7 +110,7 @@ int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryp
         qDebug() << "Error";
         /* Error */
         EVP_CIPHER_CTX_free(ctx);
-        return 0;
+        return 1;
     }
     qDebug() << "NoError";
 
@@ -128,7 +134,7 @@ int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryp
             /* Error */
             qDebug() << "Error";
             EVP_CIPHER_CTX_free(ctx);
-            return 0;
+            return 1;
         }
 
         decryptedBuffer.write(reinterpret_cast<char*>(decrypted_buf), decr_len);
@@ -140,7 +146,7 @@ int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryp
     if (!EVP_DecryptFinal_ex(ctx, decrypted_buf, &tmplen)) {
           /* Error */
           EVP_CIPHER_CTX_free(ctx);
-          return -1;
+          return 1;
       }
       qDebug() << "***EVP_DecryptFinal_ex " << reinterpret_cast<char*>(decrypted_buf);
       decryptedBuffer.write(reinterpret_cast<char*>(decrypted_buf), tmplen);
@@ -181,12 +187,18 @@ void MainWindow::on_lineEdit_2_returnPressed()
     memcpy(hash_key, hash.data(), 32);
     qDebug() << "***hash_key -> " << hash_key;
 
-    if (readJSON(hash_key) == 1)
+    if (readJSON(hash_key) == 0)
     {
         ui->stackedWidget->setCurrentIndex(0);
         filterListWidget("");
     }
+    else
+    {
+        ui->label->setText("Неверный ПИН-код");
+        ui->label->setStyleSheet("color:red");
+    }
 
+    ui->lineEdit_2->clear();
 
 }
 

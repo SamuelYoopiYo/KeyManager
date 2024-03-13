@@ -15,13 +15,18 @@ class ListItem : public QWidget
 
 public:
     explicit ListItem(QString site, QString login_encrypted, QString password_encrypted, QWidget *parent = nullptr);
-    int decryptString(const QByteArray& encryptedBytes, QByteArray& decryptedBytes);
+    bool checkJSON(unsigned char *key);
+    int decryptString(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
+    int decryptFile(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
     ~ListItem();
 
 private slots:
-    void on_pushButton_clicked(bool checked);
     void getData(QString pin);
 
+
+    void on_loginCopyPushButton_clicked();
+
+    void on_passwordCopyPushButton_clicked();
 
 private:
     Ui::ListItem *ui;

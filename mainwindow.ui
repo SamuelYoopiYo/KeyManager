@@ -146,6 +146,9 @@ color: rgb(192, 191, 188);</string>
           <property name="styleSheet">
            <string notr="true">color: rgb(192, 191, 188);</string>
           </property>
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
          </widget>
         </item>
        </layout>
