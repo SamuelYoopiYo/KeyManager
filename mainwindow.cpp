@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    ui->stackedWidget->setCurrentIndex(2);
 
     QObject::connect(ui->lineEdit, &QLineEdit::textEdited, this, &MainWindow::filterListWidget);
 }
@@ -200,5 +200,17 @@ void MainWindow::on_lineEdit_2_returnPressed()
 
     ui->lineEdit_2->clear();
 
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
 }
 

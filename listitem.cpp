@@ -44,18 +44,12 @@ bool ListItem::checkJSON(unsigned char *key)
     if(!jsonFile.open(QIODevice::ReadOnly)) return false;
 
     QByteArray hexEncryptedBytes = jsonFile.readAll();
-//    qDebug() << "***hexEncryptedBytes" << hexEncryptedBytes;
     QByteArray encryptedBytes = QByteArray::fromHex(hexEncryptedBytes);
-//    qDebug() << "***encryptedBytes" << encryptedBytes;
     QByteArray decryptedBytes;
-//    qDebug() << "***decryptedBytes" << decryptedBytes;
+
     int ret_code = MainWindow::doDecrypt(encryptedBytes, decryptedBytes, key);
 
-//    qDebug() << "***decryptedBytes " << decryptedBytes;
-
-
     QJsonDocument jsonDoc = QJsonDocument::fromJson(decryptedBytes);
-//    qDebug() << "***jsonDoc " << jsonDoc;
 
     if (!jsonDoc.isObject())
     {

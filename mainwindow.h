@@ -28,5 +28,7 @@ private:
 private slots:
 
     void on_lineEdit_2_returnPressed();
+    void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
 };
 #endif // MAINWINDOW_H
