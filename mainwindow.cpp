@@ -41,7 +41,7 @@ bool MainWindow::readJSON(unsigned char *key)
 //    qDebug() << "***encryptedBytes" << encryptedBytes;
     QByteArray decryptedBytes;
 //    qDebug() << "***decryptedBytes" << decryptedBytes;
-    int ret_code = decryptFile(encryptedBytes, decryptedBytes, key);
+    int ret_code = doDecrypt(encryptedBytes, decryptedBytes, key);
 
 //    qDebug() << "***decryptedBytes " << decryptedBytes;
 
@@ -87,7 +87,7 @@ void MainWindow::filterListWidget(const QString &searchStrings)
     }
 }
 
-int MainWindow::decryptFile(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key)
+int MainWindow::doDecrypt(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key)
 {
 
 //    QByteArray key_hex("060e33205a731400c2eb92bc12cf921a4e44cf1851d216f144337dd6ec5350a7");
