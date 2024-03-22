@@ -20,6 +20,7 @@ public:
     QJsonArray jsonArr;
     void filterListWidget(const QString &searchStrings);
     static int doDecrypt(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
+    int doEncrypt(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
     ~MainWindow();
 
 private:
@@ -30,5 +31,6 @@ private slots:
     void on_lineEdit_2_returnPressed();
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
+    void on_pushButton_3_clicked();
 };
 #endif // MAINWINDOW_H
