@@ -38,7 +38,7 @@ ListItem::ListItem(QString site, QString login_encrypted, QString password_encry
     ui->icon->setPixmap(pix.scaled(w,h, Qt::KeepAspectRatio));
 }
 
-bool ListItem::checkJSON(unsigned char *key)
+bool ListItem::checkJSON(unsigned char *key, unsigned char *nonce)
 {
     QFile jsonFile("/home/ezhik/pars/json/cridentials_encrypted.json");
     if(!jsonFile.open(QIODevice::ReadOnly)) return false;
@@ -47,7 +47,7 @@ bool ListItem::checkJSON(unsigned char *key)
     QByteArray encryptedBytes = QByteArray::fromHex(hexEncryptedBytes);
     QByteArray decryptedBytes;
 
-    int ret_code = MainWindow::doDecrypt(encryptedBytes, decryptedBytes, key);
+    int ret_code = MainWindow::doDecrypt(encryptedBytes, decryptedBytes, key, nonce);
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(decryptedBytes);
 
@@ -63,6 +63,7 @@ bool ListItem::checkJSON(unsigned char *key)
 ListItem::~ListItem()
 {
     delete [] pass_encr;
+    delete [] log_encr;
     delete ui;
 }
 
@@ -80,13 +81,19 @@ void ListItem::on_loginCopyPushButton_clicked()
     memcpy(hash_key, hash.data(), 32);
     qDebug() << "***hash_key -> " << hash_key;
 
-    if (checkJSON(hash_key) == 0)
+    QByteArray nonceHex = "00000000a723ac65c7730000";
+    QByteArray nonceBA = QByteArray::fromHex(nonceHex);
+    unsigned char nonce[12] = {0};
+    memcpy(nonce, nonceBA.data(), 12);
+    qDebug() << nonce;
+
+    if (checkJSON(hash_key, nonce) == 0)
     {
         QByteArray hexEncryptedLog(log_encr);
         QByteArray encryptedLog = QByteArray::fromHex(hexEncryptedLog);
         QByteArray decryptedLog;
 
-        if (MainWindow::doDecrypt(encryptedLog, decryptedLog, hash_key) == 0)
+        if (MainWindow::doDecrypt(encryptedLog, decryptedLog, hash_key, nonce) == 0)
         {
             QString login(decryptedLog);
             QClipboard *clipboard = QGuiApplication::clipboard();
@@ -123,13 +130,19 @@ void ListItem::on_passwordCopyPushButton_clicked()
     memcpy(hash_key, hash.data(), 32);
     qDebug() << "***hash_key -> " << hash_key;
 
-    if (checkJSON(hash_key) == 0)
+    QByteArray nonceHex = "00000000a723ac65c7730000";
+    QByteArray nonceBA = QByteArray::fromHex(nonceHex);
+    unsigned char nonce[12] = {0};
+    memcpy(nonce, nonceBA.data(), 12);
+    qDebug() << nonce;
+
+    if (checkJSON(hash_key, nonce) == 0)
     {
         QByteArray hexEncryptedPass(pass_encr);
         QByteArray encryptedPass = QByteArray::fromHex(hexEncryptedPass);
         QByteArray decryptedPass;
 
-        if (MainWindow::doDecrypt(encryptedPass, decryptedPass, hash_key) == 0)
+        if (MainWindow::doDecrypt(encryptedPass, decryptedPass, hash_key, nonce) == 0)
         {
             QString password(decryptedPass);
             QClipboard *clipboard = QGuiApplication::clipboard();

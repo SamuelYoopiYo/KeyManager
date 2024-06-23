@@ -16,11 +16,11 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    bool readJSON(unsigned char *key);
+    bool readJSON(unsigned char *key, unsigned char *nonce);
     QJsonArray jsonArr;
     void filterListWidget(const QString &searchStrings);
-    static int doDecrypt(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
-    int doEncrypt(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
+    static int doDecrypt(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key, unsigned char *nonce);
+//    int doEncrypt(const QByteArray& encryptedBytes, QByteArray& decryptedBytes, unsigned char *key);
     ~MainWindow();
 
 private:

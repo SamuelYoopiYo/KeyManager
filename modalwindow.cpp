@@ -33,4 +33,3 @@ void ModalWindow::on_passwordLineEdit_returnPressed()
 {
     accept();
 }
-

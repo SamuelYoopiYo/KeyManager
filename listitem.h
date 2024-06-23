@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include <modalwindow.h>
+#include <mainwindow.h>
 
 namespace Ui {
 class ListItem;
@@ -15,7 +16,7 @@ class ListItem : public QWidget
 
 public:
     explicit ListItem(QString site, QString login_encrypted, QString password_encrypted, QWidget *parent = nullptr);
-    bool checkJSON(unsigned char *key);
+    bool checkJSON(unsigned char *key, unsigned char *nonce);
     ~ListItem();
 
 private slots:
